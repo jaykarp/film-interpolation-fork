@@ -93,7 +93,9 @@ def _recursive_generator(
 
 def interpolate_recursively_from_files(
     frames: List[str], times_to_interpolate: int,
-    interpolator: interpolator_lib.Interpolator) -> Iterable[np.ndarray]:
+    interpolator: interpolator_lib.Interpolator,
+    _output_frames,
+    directory) -> Iterable[np.ndarray]:
   """Generates interpolated frames by repeatedly interpolating the midpoint.
 
   Loads the files on demand and uses the yield paradigm to return the frames
@@ -116,11 +118,10 @@ def interpolate_recursively_from_files(
   num_frames = (n - 1) * (2**(times_to_interpolate) - 1)
   bar = tqdm(total=num_frames, ncols=100, colour='green')
   for i in range(1, n):
-    yield from _recursive_generator(
+    rframe = list(_recursive_generator(
         read_image(frames[i - 1]), read_image(frames[i]), times_to_interpolate,
-        interpolator, bar)
-  # Separately yield the final frame.
-  yield read_image(frames[-1])
+        interpolator, bar)) + [read_image(frames[-1])]
+    _output_frames(rframe, f'{directory}/interpolated_frames{i}')
 
 def interpolate_recursively_from_memory(
     frames: List[np.ndarray], times_to_interpolate: int,

@@ -168,13 +168,12 @@ class ProcessDirectory(beam.DoFn):
     ]
     input_frames = functools.reduce(lambda x, y: x + y, input_frames_list)
     logging.info('Generating in-between frames for %s.', directory)
-    frames = list(
-        util.interpolate_recursively_from_files(
-            input_frames, _TIMES_TO_INTERPOLATE.value, self.interpolator))
-    _output_frames(frames, f'{directory}/interpolated_frames')
-    if _OUTPUT_VIDEO.value:
-      media.write_video(f'{directory}/interpolated.mp4', frames, fps=_FPS.value)
-      logging.info('Output video saved at %s/interpolated.mp4.', directory)
+    util.interpolate_recursively_from_files(
+        input_frames, _TIMES_TO_INTERPOLATE.value, self.interpolator, _output_frames, directory)
+    # _output_frames(frames, f'{directory}/interpolated_frames')
+    # if _OUTPUT_VIDEO.value:
+    #   media.write_video(f'{directory}/interpolated.mp4', frames, fps=_FPS.value)
+    #   logging.info('Output video saved at %s/interpolated.mp4.', directory)
 
 
 def _run_pipeline() -> None:
