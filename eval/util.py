@@ -120,7 +120,7 @@ def interpolate_recursively_from_files(
   for i in range(1, n):
     rframe = list(_recursive_generator(
         read_image(frames[i - 1]), read_image(frames[i]), times_to_interpolate,
-        interpolator, bar)) + [read_image(frames[-1])]
+        interpolator, bar))
     _output_frames(rframe, f'{directory}/interpolated_frames{i}')
 
 def interpolate_recursively_from_memory(
